@@ -3,203 +3,132 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>For You ❤️</title>
+  <title>Just For You 💖</title>
 
   <style>
     body {
       margin: 0;
-      height: 100vh;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
-      font-family: 'Segoe UI', sans-serif;
-      overflow: hidden;
+      height: 100vh;
+      text-align: center;
     }
 
-    .container {
-      text-align: center;
+    .card {
       background: white;
-      padding: 32px 26px;
-      border-radius: 18px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
-      max-width: 340px;
+      padding: 30px 20px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
       width: 90%;
+      max-width: 400px;
+      position: relative;
     }
 
     h1 {
-      color: #e6005c;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      color: #e63946;
     }
 
     p {
       color: #555;
-      margin: 8px 0;
+      font-size: 16px;
     }
 
-    .soft {
-      font-size: 14px;
-      color: #777;
-    }
-
-    .buttons {
+    .choice {
+      margin-top: 30px;
+      height: 160px;
       position: relative;
-      height: 130px;
-      margin-top: 18px;
     }
 
     button {
       padding: 12px 22px;
       font-size: 16px;
       border: none;
-      border-radius: 30px;
+      border-radius: 25px;
       cursor: pointer;
-      position: absolute;
-      transition: 0.25s ease;
     }
 
     #yesBtn {
-      background: #ff3366;
+      position: absolute;
+      background: #ff4d6d;
       color: white;
-      left: 50%;
-      transform: translateX(-50%);
+      transition: all 0.25s ease;
     }
 
     #noBtn {
-      background: #ddd;
-      color: #333;
-      top: 70px;
+      background: #adb5bd;
+      color: white;
+      margin-top: 100px;
+    }
+
+    #msg {
+      display: none;
+      margin-top: 20px;
+      color: #444;
+      font-weight: 500;
+    }
+
+    .whatsapp-btn {
+      position: fixed;
+      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-    }
-
-    .message {
-      display: none;
-      margin-top: 18px;
-      font-size: 18px;
-      color: #ff3366;
-      font-weight: 600;
-    }
-
-    .extra {
-      display: none;
-      margin-top: 10px;
-      font-size: 14px;
-      color: #555;
-    }
-
-    .share {
-      display: none;
-      margin-top: 14px;
       background: #25D366;
       color: white;
-      padding: 10px 18px;
-      border-radius: 25px;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .heart {
-      position: absolute;
-      font-size: 20px;
-      animation: fall linear infinite;
-      color: #ff3366;
-    }
-
-    @keyframes fall {
-      0% {
-        transform: translateY(-10vh);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(110vh);
-        opacity: 0;
-      }
+      padding: 14px 24px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.25);
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
-    <h1>Hey Mit ❤️</h1>
-    <p>I made this just for you.</p>
-    <p class="soft">Will you be my Valentine?</p>
+  <div class="card">
+    <h1>Hey you 👀</h1>
+    <p>I made this little page just to ask you something…</p>
 
-    <div class="buttons">
-      <button id="yesBtn">YES 💖</button>
-      <button id="noBtn">NO 🙃</button>
+    <h3>Will you be my Valentine? 💕</h3>
+
+    <div class="choice">
+      <button id="yesBtn">Yes 💖</button>
+      <button id="noBtn">No 🙃</button>
     </div>
 
-    <div class="message" id="loveMsg">
-      Yayyy! 💕  
-      You just made my heart really happy.
-    </div>
-
-    <div class="extra" id="extraMsg">
-      PS: I owe you chocolates, smiles,  
-      and unlimited care 😌
-    </div>
-
-    <button class="share" id="shareBtn" onclick="shareLove()">
-      Tell me on WhatsApp 💬
-    </button>
+    <p id="msg">Okay… I’ll still smile 😌❤️</p>
   </div>
 
+  <a 
+    href="https://wa.me/91XXXXXXXXXX?text=I%20smiled%20after%20seeing%20your%20page%20🙈"
+    target="_blank"
+    class="whatsapp-btn"
+  >
+    💬 Text me on WhatsApp
+  </a>
+
   <script>
-    const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
-    const msg = document.getElementById("loveMsg");
-    const extra = document.getElementById("extraMsg");
-    const shareBtn = document.getElementById("shareBtn");
+    const noBtn = document.getElementById("noBtn");
+    const msg = document.getElementById("msg");
 
-    const noTexts = [
-      "Are you sure? 🥺",
-      "Think again 😌",
-      "That's illegal 🚨",
-      "Okay wow rude 😐",
-      "Just click YES 🙄"
-    ];
-    let noCount = 0;
-
-    function moveButton() {
-      const x = Math.random() * 220 - 110;
-      const y = Math.random() * 220 - 110;
-      noBtn.style.transform = `translate(${x}px, ${y}px)`;
-      noBtn.innerText = noTexts[noCount % noTexts.length];
-      noCount++;
-    }
-
-    noBtn.addEventListener("mouseover", moveButton);
-    noBtn.addEventListener("click", moveButton);
-
-    yesBtn.addEventListener("click", () => {
-      msg.style.display = "block";
-      extra.style.display = "block";
-      shareBtn.style.display = "inline-block";
-      createHearts();
+    yesBtn.addEventListener("mouseover", () => {
+      const x = Math.random() * 220;
+      const y = Math.random() * 120;
+      yesBtn.style.left = x + "px";
+      yesBtn.style.top = y + "px";
     });
 
-    function createHearts() {
-      for (let i = 0; i < 35; i++) {
-        const heart = document.createElement("div");
-        heart.classList.add("heart");
-        heart.innerText = "❤️";
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.animationDuration = (2 + Math.random() * 3) + "s";
-        document.body.appendChild(heart);
+    noBtn.addEventListener("click", () => {
+      msg.style.display = "block";
+    });
 
-        setTimeout(() => heart.remove(), 5000);
-      }
-    }
-
-    function shareLove() {
-      window.open(
-        "https://wa.me/?text=I%20just%20said%20YES%20❤️😌",
-        "_blank"
-      );
-    }
+    console.log("If you're reading this… you're special ❤️");
   </script>
 
 </body>

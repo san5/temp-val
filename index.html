@@ -8,7 +8,6 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       font-family: "Segoe UI", sans-serif;
       background: linear-gradient(135deg, #ffdde1, #ee9ca7);
       display: flex;
@@ -16,6 +15,7 @@
       align-items: center;
       height: 100vh;
       text-align: center;
+      overflow: hidden;
     }
 
     .card {
@@ -26,21 +26,27 @@
       width: 90%;
       max-width: 400px;
       position: relative;
+      z-index: 2;
     }
 
     h1 {
-      margin-bottom: 10px;
       color: #e63946;
+      margin-bottom: 10px;
     }
 
     p {
       color: #555;
-      font-size: 16px;
+    }
+
+    #hint {
+      margin-top: 10px;
+      font-size: 15px;
+      color: #666;
     }
 
     .choice {
-      margin-top: 30px;
-      height: 160px;
+      margin-top: 25px;
+      height: 180px;
       position: relative;
     }
 
@@ -50,26 +56,29 @@
       border: none;
       border-radius: 25px;
       cursor: pointer;
+      transition: all 0.25s ease;
+      position: absolute;
     }
 
     #yesBtn {
-      position: absolute;
       background: #ff4d6d;
       color: white;
-      transition: all 0.25s ease;
+      left: 40%;
+      top: 20px;
     }
 
     #noBtn {
       background: #adb5bd;
       color: white;
-      margin-top: 100px;
+      left: 40%;
+      top: 110px;
     }
 
     #msg {
       display: none;
       margin-top: 20px;
-      color: #444;
       font-weight: 500;
+      color: #444;
     }
 
     .whatsapp-btn {
@@ -84,6 +93,23 @@
       text-decoration: none;
       font-weight: bold;
       box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+      z-index: 3;
+    }
+
+    /* ❤️ Love rain */
+    .heart {
+      position: fixed;
+      top: -20px;
+      font-size: 20px;
+      animation: fall linear forwards;
+      z-index: 1;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
     }
   </style>
 </head>
@@ -94,18 +120,20 @@
     <h1>Hey you 👀</h1>
     <p>I made this little page just to ask you something…</p>
 
-    <h3>Will you be my Valentine? 💕</h3>
+    <h3>Can I be your Valentine? 💕</h3>
+
+    <p id="hint">Are you sure? Think again 😊</p>
 
     <div class="choice">
       <button id="yesBtn">Yes 💖</button>
       <button id="noBtn">No 🙃</button>
     </div>
 
-    <p id="msg">Okay… I’ll still smile 😌❤️</p>
+    <p id="msg"></p>
   </div>
 
-  <a 
-    href="https://wa.me/91XXXXXXXXXX?text=I%20smiled%20after%20seeing%20your%20page%20🙈"
+  <a
+    href="https://wa.me/91XXXXXXXXXX?text=I%20clicked%20YES%20and%20smiled%20😊💖"
     target="_blank"
     class="whatsapp-btn"
   >
@@ -116,19 +144,60 @@
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
     const msg = document.getElementById("msg");
+    const hint = document.getElementById("hint");
+
+    let yesMoves = 0;
+    const maxYesMoves = 5;
 
     yesBtn.addEventListener("mouseover", () => {
+      if (yesMoves >= maxYesMoves) return;
+
+      yesMoves++;
       const x = Math.random() * 220;
-      const y = Math.random() * 120;
+      const y = Math.random() * 80;
+
       yesBtn.style.left = x + "px";
       yesBtn.style.top = y + "px";
+
+      if (yesMoves === maxYesMoves) {
+        hint.innerText = "Okay… now it’s easy 😊";
+      }
+    });
+
+    noBtn.addEventListener("mouseover", () => {
+      const x = Math.random() * 220;
+      const y = 100 + Math.random() * 60;
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    });
+
+    yesBtn.addEventListener("click", () => {
+      msg.style.display = "block";
+      msg.innerText = "I was hoping you’d say yes 😊💖";
+      startLoveRain();
     });
 
     noBtn.addEventListener("click", () => {
       msg.style.display = "block";
+      msg.innerText = "That’s okay… I’ll still smile 😊❤️";
     });
 
-    console.log("If you're reading this… you're special ❤️");
+    function startLoveRain() {
+      for (let i = 0; i < 40; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerText = "❤️";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = 2 + Math.random() * 3 + "s";
+        document.body.appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove();
+        }, 5000);
+      }
+    }
+
+    console.log("Some yeses are worth the wait ❤️");
   </script>
 
 </body>

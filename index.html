@@ -2,107 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Just For You 💖</title>
+  <title>Just One Question 💖</title>
 
   <style>
     body {
+      height: 100vh;
       margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       font-family: "Segoe UI", sans-serif;
       background: linear-gradient(135deg, #ffdde1, #ee9ca7);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
       overflow: hidden;
     }
 
-    .card {
-      background: white;
-      padding: 30px 20px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      width: 90%;
-      max-width: 400px;
-      position: relative;
-      z-index: 2;
-    }
-
     h1 {
-      color: #e63946;
-      margin-bottom: 10px;
+      color: #6a1b4d;
+      margin-bottom: 40px;
     }
 
-    p {
-      color: #555;
-    }
-
-    #hint {
-      margin-top: 10px;
-      font-size: 15px;
-      color: #666;
-    }
-
-    .choice {
-      margin-top: 25px;
-      height: 180px;
+    .buttons {
       position: relative;
+      width: 300px;
+      height: 200px;
     }
 
     button {
-      padding: 12px 22px;
-      font-size: 16px;
+      position: absolute;
+      padding: 12px 24px;
+      font-size: 18px;
       border: none;
       border-radius: 25px;
       cursor: pointer;
-      transition: all 0.25s ease;
-      position: absolute;
+      transition: all 0.3s ease;
     }
 
-    #yesBtn {
-      background: #ff4d6d;
+    #yes {
+      background-color: #ff4081;
       color: white;
-      left: 40%;
-      top: 20px;
+      left: 40px;
+      top: 80px;
     }
 
-    #noBtn {
-      background: #adb5bd;
+    #no {
+      background-color: #9e9e9e;
       color: white;
-      left: 40%;
-      top: 110px;
+      left: 170px;
+      top: 80px;
     }
 
-    #msg {
-      display: none;
-      margin-top: 20px;
-      font-weight: 500;
-      color: #444;
+    #message {
+      margin-top: 30px;
+      font-size: 18px;
+      color: #4a154b;
+      min-height: 24px;
     }
 
-    .whatsapp-btn {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #25D366;
-      color: white;
-      padding: 14px 24px;
-      border-radius: 30px;
-      text-decoration: none;
-      font-weight: bold;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.25);
-      z-index: 3;
-    }
-
-    /* ❤️ Love rain */
+    /* Love rain */
     .heart {
       position: fixed;
       top: -20px;
-      font-size: 20px;
+      font-size: 24px;
       animation: fall linear forwards;
-      z-index: 1;
     }
 
     @keyframes fall {
@@ -116,88 +78,74 @@
 
 <body>
 
-  <div class="card">
-    <h1>Hey you 👀</h1>
-    <p>I made this little page just to ask you something…</p>
+  <h1>Will you go out with me? 💕</h1>
 
-    <h3>Can I be your Valentine? 💕</h3>
-
-    <p id="hint">Are you sure? Think again 😊</p>
-
-    <div class="choice">
-      <button id="yesBtn">Yes 💖</button>
-      <button id="noBtn">No 🙃</button>
-    </div>
-
-    <p id="msg"></p>
+  <div class="buttons">
+    <button id="yes">Yes 💖</button>
+    <button id="no">No 🙈</button>
   </div>
 
-  <a
-    href="https://wa.me/91XXXXXXXXXX?text=I%20clicked%20YES%20and%20smiled%20😊💖"
-    target="_blank"
-    class="whatsapp-btn"
-  >
-    💬 Text me on WhatsApp
-  </a>
+  <div id="message"></div>
 
   <script>
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const msg = document.getElementById("msg");
-    const hint = document.getElementById("hint");
+    const yesBtn = document.getElementById("yes");
+    const noBtn = document.getElementById("no");
+    const message = document.getElementById("message");
 
     let yesMoves = 0;
     const maxYesMoves = 5;
 
-    yesBtn.addEventListener("mouseover", () => {
-      if (yesMoves >= maxYesMoves) return;
-
-      yesMoves++;
+    /* NO button behavior */
+    noBtn.addEventListener("mouseenter", () => {
       const x = Math.random() * 220;
-      const y = Math.random() * 80;
+      const y = Math.random() * 150;
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
 
-      yesBtn.style.left = x + "px";
-      yesBtn.style.top = y + "px";
+      message.textContent = "No is not really an option today 😜";
+    });
 
-      if (yesMoves === maxYesMoves) {
-        hint.innerText = "Okay… now it’s easy 😊";
+    noBtn.addEventListener("mouseleave", () => {
+      message.textContent = "";
+    });
+
+    /* YES button behavior */
+    yesBtn.addEventListener("mouseenter", () => {
+      if (yesMoves < maxYesMoves) {
+        const x = Math.random() * 220;
+        const y = Math.random() * 150;
+        yesBtn.style.left = x + "px";
+        yesBtn.style.top = y + "px";
+
+        yesMoves++;
+        message.textContent = "Are you sure? Think again 🤔";
+      } else {
+        message.textContent = "Okay… now you can say YES 💗";
       }
     });
 
-    noBtn.addEventListener("mouseover", () => {
-      const x = Math.random() * 220;
-      const y = 100 + Math.random() * 60;
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
-    });
-
     yesBtn.addEventListener("click", () => {
-      msg.style.display = "block";
-      msg.innerText = "I was hoping you’d say yes 😊💖";
-      startLoveRain();
+      if (yesMoves >= maxYesMoves) {
+        message.textContent = "Yayyy 💕 You just made my day!";
+        startLoveRain();
+      }
     });
 
-    noBtn.addEventListener("click", () => {
-      msg.style.display = "block";
-      msg.innerText = "That’s okay… I’ll still smile 😊❤️";
-    });
-
+    /* Love rain effect */
     function startLoveRain() {
-      for (let i = 0; i < 40; i++) {
+      setInterval(() => {
         const heart = document.createElement("div");
         heart.className = "heart";
-        heart.innerText = "❤️";
+        heart.textContent = "❤️";
         heart.style.left = Math.random() * 100 + "vw";
-        heart.style.animationDuration = 2 + Math.random() * 3 + "s";
+        heart.style.animationDuration = (2 + Math.random() * 3) + "s";
         document.body.appendChild(heart);
 
         setTimeout(() => {
           heart.remove();
         }, 5000);
-      }
+      }, 300);
     }
-
-    console.log("Some yeses are worth the wait ❤️");
   </script>
 
 </body>

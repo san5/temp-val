@@ -3,100 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <title>Will You Be My Valentine? ❤️</title>
+
 <style>
-    body{
-        margin:0;
-        overflow:hidden;
-        font-family: 'Segoe UI', sans-serif;
-        background: linear-gradient(#ffdde1,#ee9ca7);
-        text-align:center;
-        color:#fff;
-    }
+body{
+    margin:0;
+    overflow:hidden;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(#ffdde1,#ee9ca7);
+    text-align:center;
+    color:#fff;
+}
 
-    #gameArea{
-        position:relative;
-        width:100vw;
-        height:100vh;
-    }
+#gameArea{
+    position:relative;
+    width:100vw;
+    height:100vh;
+}
 
-    .heart{
-        position:absolute;
-        font-size:24px;
-        animation: fall linear forwards;
-    }
+.heart{
+    position:absolute;
+    font-size:24px;
+    animation: fall linear forwards;
+}
 
-    @keyframes fall{
-        to{ transform: translateY(100vh); }
-    }
+@keyframes fall{
+    to{ transform: translateY(100vh); }
+}
 
-    #basket{
-        position:absolute;
-        bottom:20px;
-        left:50%;
-        transform:translateX(-50%);
-        font-size:40px;
-    }
+#basket{
+    position:absolute;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:42px;
+    transition:left .05s;
+}
 
-    #meterBox{
-        position:absolute;
-        top:20px;
-        left:50%;
-        transform:translateX(-50%);
-        width:60%;
-        height:25px;
-        background:#ffffff55;
-        border-radius:20px;
-        overflow:hidden;
-    }
+#meterBox{
+    position:absolute;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    width:70%;
+    height:26px;
+    background:#ffffff55;
+    border-radius:20px;
+    overflow:hidden;
+}
 
-    #meter{
-        height:100%;
-        width:0%;
-        background:#ff4d6d;
-        transition:width .3s;
-    }
+#meter{
+    height:100%;
+    width:0%;
+    background:#ff4d6d;
+    transition:width .25s;
+}
 
-    #proposal{
-        display:none;
-        position:absolute;
-        top:50%;
-        left:50%;
-        transform:translate(-50%,-50%);
-        background:#fff;
-        color:#333;
-        padding:40px;
-        border-radius:20px;
-        box-shadow:0 10px 30px rgba(0,0,0,0.3);
-    }
+#proposal{
+    display:none;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:white;
+    color:#333;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    width:80%;
+    max-width:320px;
+}
 
-    button{
-        padding:12px 25px;
-        margin:15px;
-        font-size:18px;
-        border:none;
-        border-radius:10px;
-        cursor:pointer;
-    }
+button{
+    padding:12px 25px;
+    margin:12px;
+    font-size:18px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
 
-    #yes{ background:#ff4d6d; color:white; }
-    #no{ background:#ccc; }
+#yes{ background:#ff4d6d; color:white; }
+#no{ background:#ccc; position:relative; }
 
-    #final{
-        display:none;
-        position:absolute;
-        top:50%;
-        left:50%;
-        transform:translate(-50%,-50%);
-        font-size:36px;
-        animation:fadeIn 2s forwards;
-    }
+#final{
+    display:none;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:34px;
+    width:80%;
+    animation:fadeIn 1.5s forwards;
+}
 
-    @keyframes fadeIn{
-        from{opacity:0; transform:translate(-50%,-60%);}
-        to{opacity:1; transform:translate(-50%,-50%);}
-    }
+@keyframes fadeIn{
+    from{opacity:0; transform:translate(-50%,-60%);}
+    to{opacity:1; transform:translate(-50%,-50%);}
+}
 </style>
 </head>
+
 <body>
 
 <div id="gameArea">
@@ -111,7 +117,7 @@
     </div>
 
     <div id="final">
-        💕 Yay! You just made my world brighter 💕<br>
+        💕 Yay! You just made my world brighter 💕<br><br>
         I promise to keep catching your heart forever ❤️
     </div>
 
@@ -127,83 +133,95 @@ const noBtn = document.getElementById("no");
 
 let score = 0;
 let maxScore = 15;
-let gameRunning = true;
+let running = true;
 
-// Move basket with mouse / touch
+/* -------- Basket movement (mobile friendly) -------- */
+function moveBasket(x){
+    const w = basket.offsetWidth;
+    let pos = x - w/2;
+    if(pos < 0) pos = 0;
+    if(pos > window.innerWidth - w) pos = window.innerWidth - w;
+    basket.style.left = pos + "px";
+}
+
 document.addEventListener("mousemove", e=>{
-    basket.style.left = e.clientX + "px";
-});
-document.addEventListener("touchmove", e=>{
-    basket.style.left = e.touches[0].clientX + "px";
+    moveBasket(e.clientX);
 });
 
-// Create falling hearts
+document.addEventListener("touchmove", e=>{
+    moveBasket(e.touches[0].clientX);
+},{passive:true});
+
+/* -------- Spawn hearts -------- */
 function spawnHeart(){
-    if(!gameRunning) return;
+    if(!running) return;
 
     const heart = document.createElement("div");
-    heart.classList.add("heart");
+    heart.className="heart";
     heart.innerText="❤️";
-    heart.style.left = Math.random()*window.innerWidth+"px";
+    heart.style.left=Math.random()*window.innerWidth+"px";
     heart.style.top="-30px";
-    heart.style.animationDuration = (3+Math.random()*2)+"s";
-
+    heart.style.animationDuration=(3+Math.random()*2)+"s";
     gameArea.appendChild(heart);
 
-    const fall = setInterval(()=>{
-        const heartRect = heart.getBoundingClientRect();
-        const basketRect = basket.getBoundingClientRect();
+    const check=setInterval(()=>{
+        const h=heart.getBoundingClientRect();
+        const b=basket.getBoundingClientRect();
 
         if(
-            heartRect.bottom >= basketRect.top &&
-            heartRect.left < basketRect.right &&
-            heartRect.right > basketRect.left
+            h.bottom>=b.top &&
+            h.left<b.right &&
+            h.right>b.left
         ){
             heart.remove();
-            clearInterval(fall);
+            clearInterval(check);
             score++;
-            meter.style.width = (score/maxScore*100)+"%";
+
+            meter.style.width=(score/maxScore*100)+"%";
 
             if(score>=maxScore){
-                gameRunning=false;
-                setTimeout(()=>proposal.style.display="block",500);
+                running=false;
+                setTimeout(()=>proposal.style.display="block",400);
             }
         }
 
-        if(heartRect.top>window.innerHeight){
+        if(h.top>window.innerHeight){
             heart.remove();
-            clearInterval(fall);
+            clearInterval(check);
         }
-    },50);
+    },40);
 }
 
 setInterval(spawnHeart,800);
 
-// Move NO button away 😆
-noBtn.addEventListener("mouseover",()=>{
-    const x = Math.random()*300 -150;
-    const y = Math.random()*200 -100;
-    noBtn.style.transform = `translate(${x}px,${y}px)`;
-});
+/* -------- Moving NO button 😆 -------- */
+noBtn.addEventListener("mouseover",moveNo);
+noBtn.addEventListener("touchstart",moveNo);
 
-// YES clicked
+function moveNo(){
+    const x=Math.random()*200-100;
+    const y=Math.random()*150-75;
+    noBtn.style.transform=`translate(${x}px,${y}px)`;
+}
+
+/* -------- YES clicked -------- */
 document.getElementById("yes").onclick=()=>{
     proposal.style.display="none";
     final.style.display="block";
-    rainHearts();
+    heartRain();
 };
 
-// Romantic heart rain finale
-function rainHearts(){
+/* -------- Romantic heart rain -------- */
+function heartRain(){
     setInterval(()=>{
-        const h = document.createElement("div");
-        h.classList.add("heart");
+        const h=document.createElement("div");
+        h.className="heart";
         h.innerText="💖";
-        h.style.left = Math.random()*window.innerWidth+"px";
+        h.style.left=Math.random()*window.innerWidth+"px";
         h.style.animationDuration="4s";
         gameArea.appendChild(h);
         setTimeout(()=>h.remove(),4000);
-    },200);
+    },180);
 }
 </script>
 

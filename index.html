@@ -52,11 +52,7 @@ button{
 }
 
 #yes{background:#ff4d6d;color:white;}
-#maybe{
-    background:#eee;
-    position:fixed;
-    z-index:10;
-}
+#maybe{background:#eee;}
 
 .small{
     font-size:14px;
@@ -85,8 +81,8 @@ button{
 </div>
 
 <div id="final">
-    ❤️ Happy Valentine’s Day, Jully ❤️<br><br>
-    I’m really glad this is you and me.<br>
+    ❤️ Happy Valentine’s Day, <span id="herName">Juuuuuly</span> ❤️<br><br>
+    I’m really glad this is us.<br>
     Let’s see where this journey takes us… together.
 </div>
 
@@ -108,9 +104,9 @@ function spawnHeart(){
 /* ---- story text flow ---- */
 const texts=[
 "I didn’t expect this to feel so comfortable…",
-"Somehow, talking to you has quietly become part of my day.",
-"And I feel something nice might be beginning between us…",
-"So… would you be my Valentine this year? ❤️"
+"But talking to you has quietly become part of my day.",
+"And I think something nice is beginning between us…",
+"So… will you be my Valentine this year? ❤️"
 ];
 
 let step=0;
@@ -132,7 +128,6 @@ next.onclick=()=>{
 
 /* ---- show Yes / Let's see ---- */
 function showChoices(){
-
     const yes=document.createElement("button");
     yes.id="yes";
     yes.innerText="Yes ❤️";
@@ -142,7 +137,7 @@ function showChoices(){
     maybe.innerText="Let’s see 😄";
 
     card.appendChild(yes);
-    document.body.appendChild(maybe);   // moved outside card
+    card.appendChild(maybe);
 
     const teaseMsgs=[
         "Are you sure? 😏",
@@ -153,21 +148,37 @@ function showChoices(){
     ];
     let teaseIndex=0;
 
+   /* maybe.onclick=()=>{
+        maybe.style.position="relative";
+        maybe.style.left=(Math.random()*160-80)+"px";
+        maybe.style.top=(Math.random()*80-40)+"px";
+        teaseBox.innerText = teaseMsgs[teaseIndex % teaseMsgs.length];
+        teaseIndex++;
+    };*/
+
     maybe.onclick=()=>{
 
-        const padding=20;
-        const maxX=window.innerWidth-maybe.offsetWidth-padding;
-        const maxY=window.innerHeight-maybe.offsetHeight-padding;
+    const cardRect = card.getBoundingClientRect();
+    const btnWidth = maybe.offsetWidth;
+    const btnHeight = maybe.offsetHeight;
 
-        const x=Math.random()*maxX;
-        const y=Math.random()*maxY;
+    const padding = 20;
 
-        maybe.style.left=x+"px";
-        maybe.style.top=y+"px";
+    const maxX = cardRect.width - btnWidth - padding;
+    const maxY = cardRect.height - btnHeight - 120; 
+    // 120 keeps it away from bottom buttons/text
 
-        teaseBox.innerText=teaseMsgs[teaseIndex%teaseMsgs.length];
-        teaseIndex++;
-    };
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    maybe.style.position="absolute";
+    maybe.style.left = x + "px";
+    maybe.style.top = y + "px";
+
+    teaseBox.innerText = teaseMsgs[teaseIndex % teaseMsgs.length];
+    teaseIndex++;
+};
+
 
     /* ---- improved YES UX ---- */
     let yesClicks=0;
@@ -187,7 +198,6 @@ function showChoices(){
         }
         else{
             card.style.display="none";
-            maybe.style.display="none";
             document.getElementById("final").style.display="block";
 
             clearInterval(heartInterval);

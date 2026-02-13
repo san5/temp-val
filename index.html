@@ -2,86 +2,72 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For You ❤️</title>
 
 <style>
-body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-    font-family: Arial, sans-serif;
-    overflow: hidden;
+body{
+    margin:0;
+    font-family:system-ui, sans-serif;
+    background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    text-align:center;
 }
 
-.card {
-    position: relative;
-    background: white;
-    padding: 40px 30px 70px;
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    width: 320px;
-    z-index: 2;
+/* falling hearts */
+.heart{
+    position:fixed;
+    top:-10px;
+    font-size:20px;
+    animation:fall linear forwards;
+    pointer-events:none;
+}
+@keyframes fall{
+    to{ transform:translateY(110vh); opacity:0;}
 }
 
-.buttons {
-    margin-top: 25px;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
+/* card */
+.card{
+    background:white;
+    width:min(92vw,420px);
+    padding:30px 24px;
+    border-radius:20px;
+    box-shadow:0 15px 35px rgba(0,0,0,.25);
 }
 
-button {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    cursor: pointer;
+h2{margin-top:0;color:#444}
+
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:10px;
+    margin:10px;
+    font-size:16px;
+    cursor:pointer;
+    transition:.25s;
 }
 
-#yesBtn {
-    background: #ff4d6d;
-    color: white;
+#yes{background:#ff4d6d;color:white;}
+#maybe{background:#eee;}
+
+.small{
+    font-size:14px;
+    color:#777;
+    margin-top:10px;
+    min-height:22px;
 }
 
-#maybeBtn {
-    background: #ddd;
-}
-
-/* applied only after first click */
-.floating {
-    position: fixed;
-    z-index: 5;
-}
-
-.popup {
-    position: fixed;
-    top: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    padding: 15px 20px;
-    border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    display: none;
-    font-size: 16px;
-    z-index: 10;
-}
-
-.heart {
-    position: fixed;
-    color: red;
-    font-size: 24px;
-    animation: fall 4s linear infinite;
-    z-index: 1;
-}
-
-@keyframes fall {
-    from { transform: translateY(-10vh); opacity: 1; }
-    to { transform: translateY(110vh); opacity: 0; }
+/* final message */
+#final{
+    display:none;
+    color:white;
+    font-size:26px;
+    padding:20px;
+    line-height:1.5;
 }
 </style>
 </head>
@@ -89,72 +75,135 @@ button {
 <body>
 
 <div class="card" id="card">
-    <h1>Happy Valentine’s Day, Juulll ❤️</h1>
-    <p>You’ve been making my days brighter…</p>
-    <p>Will you be my Valentine?</p>
-
-    <div class="buttons">
-        <button id="yesBtn">Yes 💖</button>
-        <button id="maybeBtn">Let’s see 🤔</button>
-    </div>
+    <h2 id="text">I didn’t expect this to feel so comfortable…</h2>
+    <button id="next">Continue ❤️</button>
+    <div class="small" id="tease"></div>
 </div>
 
-<div class="popup" id="popup"></div>
+<div id="final">
+    ❤️ Happy Valentine’s Day, <span id="herName">Juulll</span> ❤️<br><br>
+    I’m really glad this is us.<br>
+    Let’s see where this journey takes us… together.
+</div>
 
 <script>
-const yesBtn = document.getElementById("yesBtn");
-const maybeBtn = document.getElementById("maybeBtn");
-const popup = document.getElementById("popup");
-const card = document.getElementById("card");
 
-let maybeClicks = 0;
+/* ---- falling hearts background ---- */
+let heartInterval = setInterval(spawnHeart,500);
 
-/* YES CLICK */
-yesBtn.onclick = () => {
-    popup.innerText = "I knew it 😌❤️";
-    popup.style.display = "block";
+function spawnHeart(){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerText="❤️";
+    h.style.left=Math.random()*100+"vw";
+    h.style.animationDuration=(4+Math.random()*3)+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),7000);
+}
 
-    for (let i = 0; i < 25; i++) {
-        const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.innerText = "❤️";
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.animationDelay = Math.random() * 3 + "s";
-        document.body.appendChild(heart);
+/* ---- story text flow ---- */
+const texts=[
+"I didn’t expect this to feel so comfortable…",
+"But talking to you has quietly become part of my day.",
+"And I think something nice is beginning between us…",
+"So… will you be my Valentine this year? ❤️"
+];
+
+let step=0;
+const card=document.getElementById("card");
+const text=document.getElementById("text");
+const next=document.getElementById("next");
+const teaseBox=document.getElementById("tease");
+
+next.onclick=()=>{
+    step++;
+    if(step<texts.length){
+        text.innerText=texts[step];
+    }
+    if(step===texts.length-1){
+        next.style.display="none";
+        showChoices();
     }
 };
 
-/* LET'S SEE CLICK */
-maybeBtn.onclick = () => {
-    maybeClicks++;
+/* ---- show Yes / Let's see ---- */
+function showChoices(){
+    const yes=document.createElement("button");
+    yes.id="yes";
+    yes.innerText="Yes ❤️";
 
-    // only now make it floating
-    if (maybeClicks === 1) {
-        maybeBtn.classList.add("floating");
-    }
+    const maybe=document.createElement("button");
+    maybe.id="maybe";
+    maybe.innerText="Let’s see 😄";
 
-    moveNearCard();
+    card.appendChild(yes);
+    card.appendChild(maybe);
 
-    const msgs = [
-        "Hmm… still thinking? 😏",
-        "Take your time… but I’m hopeful 💫",
-        "I’ll wait… but not forever 😌"
+    const teaseMsgs=[
+        "Are you sure? 😏",
+        "Think again…",
+        "I'll keep asking 😌",
+        "That button seems broken 🤭",
+        "Nice try 😄"
     ];
+    let teaseIndex=0;
 
-    popup.innerText = msgs[Math.min(maybeClicks-1, msgs.length-1)];
-    popup.style.display = "block";
+   /* maybe.onclick=()=>{
+        maybe.style.position="relative";
+        maybe.style.left=(Math.random()*160-80)+"px";
+        maybe.style.top=(Math.random()*80-40)+"px";
+        teaseBox.innerText = teaseMsgs[teaseIndex % teaseMsgs.length];
+        teaseIndex++;
+    };*/
+
+    maybe.onclick=()=>{
+
+    const cardRect = card.getBoundingClientRect();
+    const btnWidth = maybe.offsetWidth;
+    const btnHeight = maybe.offsetHeight;
+
+    const padding = 20;
+
+    const maxX = cardRect.width - btnWidth - padding;
+    const maxY = cardRect.height - btnHeight - 120; 
+    // 120 keeps it away from bottom buttons/text
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    maybe.style.position="absolute";
+    maybe.style.left = x + "px";
+    maybe.style.top = y + "px";
+
+    teaseBox.innerText = teaseMsgs[teaseIndex % teaseMsgs.length];
+    teaseIndex++;
 };
 
-/* move button near card */
-function moveNearCard() {
-    const rect = card.getBoundingClientRect();
 
-    const padding = 15;
-    const x = rect.right + padding + Math.random() * 40;
-    const y = rect.top + Math.random() * rect.height;
+    /* ---- improved YES UX ---- */
+    let yesClicks=0;
 
-    maybeBtn.style.left = x + "px";
-    maybeBtn.style.top = y + "px";
+    yes.onclick=()=>{
+        yesClicks++;
+
+        if(yesClicks===1){
+            text.innerText="That made me smile 🙂";
+            teaseBox.innerText="Tap Yes again ❤️ (1/3)";
+            yes.style.transform="scale(1.1)";
+        }
+        else if(yesClicks===2){
+            text.innerText="I promise this will be worth it ❤️";
+            teaseBox.innerText="One more time… 😌 (2/3)";
+            yes.style.transform="scale(1.2)";
+        }
+        else{
+            card.style.display="none";
+            document.getElementById("final").style.display="block";
+
+            clearInterval(heartInterval);
+            heartInterval=setInterval(spawnHeart,120);
+        }
+    };
 }
 </script>
 

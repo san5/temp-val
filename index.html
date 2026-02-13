@@ -37,7 +37,6 @@ body{
     padding:30px 24px;
     border-radius:20px;
     box-shadow:0 15px 35px rgba(0,0,0,.25);
-    transition:.4s;
 }
 
 h2{margin-top:0;color:#444}
@@ -66,8 +65,9 @@ button{
 #final{
     display:none;
     color:white;
-    font-size:24px;
+    font-size:26px;
     padding:20px;
+    line-height:1.5;
 }
 </style>
 </head>
@@ -81,7 +81,7 @@ button{
 </div>
 
 <div id="final">
-    ❤️ Happy Valentine’s Day ❤️<br><br>
+    ❤️ Happy Valentine’s Day, <span id="Jullllllllllllllllllllll">HerName</span> ❤️<br><br>
     I’m really glad this is us.<br>
     Let’s see where this journey takes us… together.
 </div>
@@ -89,8 +89,7 @@ button{
 <script>
 
 /* ---- falling hearts background ---- */
-let heartSpeed = 500;
-let heartInterval = setInterval(spawnHeart, heartSpeed);
+let heartInterval = setInterval(spawnHeart,500);
 
 function spawnHeart(){
     const h=document.createElement("div");
@@ -140,7 +139,6 @@ function showChoices(){
     card.appendChild(yes);
     card.appendChild(maybe);
 
-    /* tease messages */
     const teaseMsgs=[
         "Are you sure? 😏",
         "Think again…",
@@ -154,12 +152,10 @@ function showChoices(){
         maybe.style.position="relative";
         maybe.style.left=(Math.random()*160-80)+"px";
         maybe.style.top=(Math.random()*80-40)+"px";
-
         teaseBox.innerText = teaseMsgs[teaseIndex % teaseMsgs.length];
         teaseIndex++;
     };
 
-    /* yes flow */
     let yesClicks=0;
     yes.onclick=()=>{
         yesClicks++;
@@ -176,9 +172,9 @@ function showChoices(){
             card.style.display="none";
             document.getElementById("final").style.display="block";
 
-            /* make falling hearts dense instead of burst */
+            /* make hearts dense */
             clearInterval(heartInterval);
-            heartInterval = setInterval(spawnHeart,120);
+            heartInterval=setInterval(spawnHeart,120);
         }
     };
 }

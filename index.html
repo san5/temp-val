@@ -148,13 +148,37 @@ function showChoices(){
     ];
     let teaseIndex=0;
 
-    maybe.onclick=()=>{
+   /* maybe.onclick=()=>{
         maybe.style.position="relative";
         maybe.style.left=(Math.random()*160-80)+"px";
         maybe.style.top=(Math.random()*80-40)+"px";
         teaseBox.innerText = teaseMsgs[teaseIndex % teaseMsgs.length];
         teaseIndex++;
-    };
+    };*/
+
+    maybe.onclick=()=>{
+
+    const cardRect = card.getBoundingClientRect();
+    const btnWidth = maybe.offsetWidth;
+    const btnHeight = maybe.offsetHeight;
+
+    const padding = 20;
+
+    const maxX = cardRect.width - btnWidth - padding;
+    const maxY = cardRect.height - btnHeight - 120; 
+    // 120 keeps it away from bottom buttons/text
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    maybe.style.position="absolute";
+    maybe.style.left = x + "px";
+    maybe.style.top = y + "px";
+
+    teaseBox.innerText = teaseMsgs[teaseIndex % teaseMsgs.length];
+    teaseIndex++;
+};
+
 
     /* ---- improved YES UX ---- */
     let yesClicks=0;

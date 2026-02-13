@@ -55,13 +55,18 @@ button{
 #yes{background:#ff4d6d;color:white;}
 #maybe{background:#eee;}
 
-.small{font-size:14px;color:#777;margin-top:10px}
+.small{
+    font-size:14px;
+    color:#777;
+    margin-top:10px;
+    min-height:20px;
+}
 
 /* final message */
 #final{
     display:none;
     color:white;
-    font-size:22px;
+    font-size:24px;
     padding:20px;
 }
 </style>
@@ -72,17 +77,21 @@ button{
 <div class="card" id="card">
     <h2 id="text">I didn’t expect this journey to feel this nice…</h2>
     <button id="next">Continue ❤️</button>
+    <div class="small" id="tease"></div>
 </div>
 
 <div id="final">
-    ❤️ I’m really glad this is us ❤️<br><br>
+    ❤️ Happy Valentine’s Day ❤️<br><br>
+    I’m really glad this is us.<br>
     Let’s see where this journey takes us… together.
 </div>
 
 <script>
 
 /* ---- falling hearts background ---- */
-setInterval(()=>{
+let baseInterval = setInterval(spawnHeart,500);
+
+function spawnHeart(){
     const h=document.createElement("div");
     h.className="heart";
     h.innerText="❤️";
@@ -90,8 +99,7 @@ setInterval(()=>{
     h.style.animationDuration=(4+Math.random()*3)+"s";
     document.body.appendChild(h);
     setTimeout(()=>h.remove(),7000);
-},500);
-
+}
 
 /* ---- story text flow ---- */
 const texts=[
@@ -105,6 +113,7 @@ let step=0;
 const card=document.getElementById("card");
 const text=document.getElementById("text");
 const next=document.getElementById("next");
+const teaseBox=document.getElementById("tease");
 
 next.onclick=()=>{
     step++;
@@ -130,11 +139,23 @@ function showChoices(){
     card.appendChild(yes);
     card.appendChild(maybe);
 
-    /* moving maybe button */
+    /* tease messages */
+    const teaseMsgs=[
+        "Are you sure? 😏",
+        "Think again…",
+        "I'll keep asking 😌",
+        "That button seems broken 🤭",
+        "Nice try 😄"
+    ];
+    let teaseIndex=0;
+
     maybe.onclick=()=>{
         maybe.style.position="relative";
         maybe.style.left=(Math.random()*160-80)+"px";
         maybe.style.top=(Math.random()*80-40)+"px";
+
+        teaseBox.innerText = teaseMsgs[teaseIndex % teaseMsgs.length];
+        teaseIndex++;
     };
 
     /* yes flow */
@@ -154,13 +175,17 @@ function showChoices(){
             burstHearts();
             card.style.display="none";
             document.getElementById("final").style.display="block";
+
+            /* make hearts denser after final */
+            clearInterval(baseInterval);
+            setInterval(spawnHeart,150);
         }
     };
 }
 
 /* ---- heart burst ---- */
 function burstHearts(){
-    for(let i=0;i<40;i++){
+    for(let i=0;i<50;i++){
         setTimeout(()=>{
             const h=document.createElement("div");
             h.className="heart";
@@ -169,7 +194,7 @@ function burstHearts(){
             h.style.animationDuration="3s";
             document.body.appendChild(h);
             setTimeout(()=>h.remove(),4000);
-        },i*30);
+        },i*25);
     }
 }
 </script>

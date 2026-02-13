@@ -1,152 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Just One Question 💖</title>
-
-  <style>
-    body {
-      height: 100vh;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
-      overflow: hidden;
+<meta charset="UTF-8">
+<title>Will You Be My Valentine? ❤️</title>
+<style>
+    body{
+        margin:0;
+        overflow:hidden;
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(#ffdde1,#ee9ca7);
+        text-align:center;
+        color:#fff;
     }
 
-    h1 {
-      color: #6a1b4d;
-      margin-bottom: 40px;
+    #gameArea{
+        position:relative;
+        width:100vw;
+        height:100vh;
     }
 
-    .buttons {
-      position: relative;
-      width: 300px;
-      height: 200px;
+    .heart{
+        position:absolute;
+        font-size:24px;
+        animation: fall linear forwards;
     }
 
-    button {
-      position: absolute;
-      padding: 12px 24px;
-      font-size: 18px;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      transition: all 0.3s ease;
+    @keyframes fall{
+        to{ transform: translateY(100vh); }
     }
 
-    #yes {
-      background-color: #ff4081;
-      color: white;
-      left: 40px;
-      top: 80px;
+    #basket{
+        position:absolute;
+        bottom:20px;
+        left:50%;
+        transform:translateX(-50%);
+        font-size:40px;
     }
 
-    #no {
-      background-color: #9e9e9e;
-      color: white;
-      left: 170px;
-      top: 80px;
+    #meterBox{
+        position:absolute;
+        top:20px;
+        left:50%;
+        transform:translateX(-50%);
+        width:60%;
+        height:25px;
+        background:#ffffff55;
+        border-radius:20px;
+        overflow:hidden;
     }
 
-    #message {
-      margin-top: 30px;
-      font-size: 18px;
-      color: #4a154b;
-      min-height: 24px;
+    #meter{
+        height:100%;
+        width:0%;
+        background:#ff4d6d;
+        transition:width .3s;
     }
 
-    /* Love rain */
-    .heart {
-      position: fixed;
-      top: -20px;
-      font-size: 24px;
-      animation: fall linear forwards;
+    #proposal{
+        display:none;
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        background:#fff;
+        color:#333;
+        padding:40px;
+        border-radius:20px;
+        box-shadow:0 10px 30px rgba(0,0,0,0.3);
     }
 
-    @keyframes fall {
-      to {
-        transform: translateY(110vh);
-        opacity: 0;
-      }
+    button{
+        padding:12px 25px;
+        margin:15px;
+        font-size:18px;
+        border:none;
+        border-radius:10px;
+        cursor:pointer;
     }
-  </style>
+
+    #yes{ background:#ff4d6d; color:white; }
+    #no{ background:#ccc; }
+
+    #final{
+        display:none;
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        font-size:36px;
+        animation:fadeIn 2s forwards;
+    }
+
+    @keyframes fadeIn{
+        from{opacity:0; transform:translate(-50%,-60%);}
+        to{opacity:1; transform:translate(-50%,-50%);}
+    }
+</style>
 </head>
-
 <body>
 
-  <h1>Will you go out with me? 💕</h1>
+<div id="gameArea">
 
-  <div class="buttons">
-    <button id="yes">Yes 💖</button>
-    <button id="no">No 🙈</button>
-  </div>
+    <div id="meterBox"><div id="meter"></div></div>
+    <div id="basket">🧺</div>
 
-  <div id="message"></div>
+    <div id="proposal">
+        <h2>Will you be my Valentine? ❤️</h2>
+        <button id="yes">Yes 💖</button>
+        <button id="no">No 🙈</button>
+    </div>
 
-  <script>
-    const yesBtn = document.getElementById("yes");
-    const noBtn = document.getElementById("no");
-    const message = document.getElementById("message");
+    <div id="final">
+        💕 Yay! You just made my world brighter 💕<br>
+        I promise to keep catching your heart forever ❤️
+    </div>
 
-    let yesMoves = 0;
-    const maxYesMoves = 5;
+</div>
 
-    /* NO button behavior */
-    noBtn.addEventListener("mouseenter", () => {
-      const x = Math.random() * 220;
-      const y = Math.random() * 150;
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
+<script>
+const gameArea = document.getElementById("gameArea");
+const basket = document.getElementById("basket");
+const meter = document.getElementById("meter");
+const proposal = document.getElementById("proposal");
+const final = document.getElementById("final");
+const noBtn = document.getElementById("no");
 
-      message.textContent = "No is not really an option today 😜";
-    });
+let score = 0;
+let maxScore = 15;
+let gameRunning = true;
 
-    noBtn.addEventListener("mouseleave", () => {
-      message.textContent = "";
-    });
+// Move basket with mouse / touch
+document.addEventListener("mousemove", e=>{
+    basket.style.left = e.clientX + "px";
+});
+document.addEventListener("touchmove", e=>{
+    basket.style.left = e.touches[0].clientX + "px";
+});
 
-    /* YES button behavior */
-    yesBtn.addEventListener("mouseenter", () => {
-      if (yesMoves < maxYesMoves) {
-        const x = Math.random() * 220;
-        const y = Math.random() * 150;
-        yesBtn.style.left = x + "px";
-        yesBtn.style.top = y + "px";
+// Create falling hearts
+function spawnHeart(){
+    if(!gameRunning) return;
 
-        yesMoves++;
-        message.textContent = "Are you sure? Think again 🤔";
-      } else {
-        message.textContent = "Okay… now you can say YES 💗";
-      }
-    });
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerText="❤️";
+    heart.style.left = Math.random()*window.innerWidth+"px";
+    heart.style.top="-30px";
+    heart.style.animationDuration = (3+Math.random()*2)+"s";
 
-    yesBtn.addEventListener("click", () => {
-      if (yesMoves >= maxYesMoves) {
-        message.textContent = "Yayyy 💕 You just made my day!";
-        startLoveRain();
-      }
-    });
+    gameArea.appendChild(heart);
 
-    /* Love rain effect */
-    function startLoveRain() {
-      setInterval(() => {
-        const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.textContent = "❤️";
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.animationDuration = (2 + Math.random() * 3) + "s";
-        document.body.appendChild(heart);
+    const fall = setInterval(()=>{
+        const heartRect = heart.getBoundingClientRect();
+        const basketRect = basket.getBoundingClientRect();
 
-        setTimeout(() => {
-          heart.remove();
-        }, 5000);
-      }, 300);
-    }
-  </script>
+        if(
+            heartRect.bottom >= basketRect.top &&
+            heartRect.left < basketRect.right &&
+            heartRect.right > basketRect.left
+        ){
+            heart.remove();
+            clearInterval(fall);
+            score++;
+            meter.style.width = (score/maxScore*100)+"%";
+
+            if(score>=maxScore){
+                gameRunning=false;
+                setTimeout(()=>proposal.style.display="block",500);
+            }
+        }
+
+        if(heartRect.top>window.innerHeight){
+            heart.remove();
+            clearInterval(fall);
+        }
+    },50);
+}
+
+setInterval(spawnHeart,800);
+
+// Move NO button away 😆
+noBtn.addEventListener("mouseover",()=>{
+    const x = Math.random()*300 -150;
+    const y = Math.random()*200 -100;
+    noBtn.style.transform = `translate(${x}px,${y}px)`;
+});
+
+// YES clicked
+document.getElementById("yes").onclick=()=>{
+    proposal.style.display="none";
+    final.style.display="block";
+    rainHearts();
+};
+
+// Romantic heart rain finale
+function rainHearts(){
+    setInterval(()=>{
+        const h = document.createElement("div");
+        h.classList.add("heart");
+        h.innerText="💖";
+        h.style.left = Math.random()*window.innerWidth+"px";
+        h.style.animationDuration="4s";
+        gameArea.appendChild(h);
+        setTimeout(()=>h.remove(),4000);
+    },200);
+}
+</script>
 
 </body>
 </html>

@@ -75,7 +75,7 @@ button{
 <body>
 
 <div class="card" id="card">
-    <h2 id="text">I didn’t expect this journey to feel this nice…</h2>
+    <h2 id="text">I didn’t expect this to feel so comfortable…</h2>
     <button id="next">Continue ❤️</button>
     <div class="small" id="tease"></div>
 </div>
@@ -89,7 +89,8 @@ button{
 <script>
 
 /* ---- falling hearts background ---- */
-let baseInterval = setInterval(spawnHeart,500);
+let heartSpeed = 500;
+let heartInterval = setInterval(spawnHeart, heartSpeed);
 
 function spawnHeart(){
     const h=document.createElement("div");
@@ -103,9 +104,9 @@ function spawnHeart(){
 
 /* ---- story text flow ---- */
 const texts=[
-"I didn’t expect this journey to feel this nice…",
-"But talking to you has become something I look forward to.",
-"And I feel we might be building something meaningful…",
+"I didn’t expect this to feel so comfortable…",
+"But talking to you has quietly become part of my day.",
+"And I think something nice is beginning between us…",
 "So… will you be my Valentine this year? ❤️"
 ];
 
@@ -172,30 +173,14 @@ function showChoices(){
             yes.style.transform="scale(1.2)";
         }
         else{
-            burstHearts();
             card.style.display="none";
             document.getElementById("final").style.display="block";
 
-            /* make hearts denser after final */
-            clearInterval(baseInterval);
-            setInterval(spawnHeart,150);
+            /* make falling hearts dense instead of burst */
+            clearInterval(heartInterval);
+            heartInterval = setInterval(spawnHeart,120);
         }
     };
-}
-
-/* ---- heart burst ---- */
-function burstHearts(){
-    for(let i=0;i<50;i++){
-        setTimeout(()=>{
-            const h=document.createElement("div");
-            h.className="heart";
-            h.innerText="💖";
-            h.style.left="50vw";
-            h.style.animationDuration="3s";
-            document.body.appendChild(h);
-            setTimeout(()=>h.remove(),4000);
-        },i*25);
-    }
 }
 </script>
 

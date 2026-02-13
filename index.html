@@ -37,6 +37,8 @@ body{
     padding:30px 24px;
     border-radius:20px;
     box-shadow:0 15px 35px rgba(0,0,0,.25);
+    position:relative;
+    z-index:2;
 }
 
 h2{margin-top:0;color:#444}
@@ -55,7 +57,7 @@ button{
 #maybe{
     background:#eee;
     position:fixed;
-    z-index:10;
+    z-index:5;
 }
 
 .small{
@@ -92,9 +94,8 @@ button{
 
 <script>
 
-/* ---- falling hearts background ---- */
-let heartInterval = setInterval(spawnHeart,500);
-
+/* ---- falling hearts ---- */
+let heartInterval=setInterval(spawnHeart,500);
 function spawnHeart(){
     const h=document.createElement("div");
     h.className="heart";
@@ -105,7 +106,7 @@ function spawnHeart(){
     setTimeout(()=>h.remove(),7000);
 }
 
-/* ---- story text flow ---- */
+/* ---- story text ---- */
 const texts=[
 "I didn’t expect this to feel so comfortable…",
 "Somehow, talking to you has quietly become part of my day.",
@@ -130,7 +131,7 @@ next.onclick=()=>{
     }
 };
 
-/* ---- show Yes / Let's see ---- */
+/* ---- choices ---- */
 function showChoices(){
 
     const yes=document.createElement("button");
@@ -142,7 +143,10 @@ function showChoices(){
     maybe.innerText="Let’s see 😄";
 
     card.appendChild(yes);
-    document.body.appendChild(maybe);   // moved outside card
+    document.body.appendChild(maybe);
+
+    /* position maybe initially near card */
+    positionNearCard(maybe);
 
     const teaseMsgs=[
         "Are you sure? 😏",
@@ -154,24 +158,13 @@ function showChoices(){
     let teaseIndex=0;
 
     maybe.onclick=()=>{
-
-        const padding=20;
-        const maxX=window.innerWidth-maybe.offsetWidth-padding;
-        const maxY=window.innerHeight-maybe.offsetHeight-padding;
-
-        const x=Math.random()*maxX;
-        const y=Math.random()*maxY;
-
-        maybe.style.left=x+"px";
-        maybe.style.top=y+"px";
-
+        positionNearCard(maybe);
         teaseBox.innerText=teaseMsgs[teaseIndex%teaseMsgs.length];
         teaseIndex++;
     };
 
-    /* ---- improved YES UX ---- */
+    /* YES flow */
     let yesClicks=0;
-
     yes.onclick=()=>{
         yesClicks++;
 
@@ -194,6 +187,24 @@ function showChoices(){
             heartInterval=setInterval(spawnHeart,120);
         }
     };
+}
+
+/* ---- movement constrained near card ---- */
+function positionNearCard(btn){
+
+    const rect=card.getBoundingClientRect();
+    const padding=20;
+
+    const minX=rect.left-80;
+    const maxX=rect.right+40;
+    const minY=rect.top-60;
+    const maxY=rect.bottom+60;
+
+    const x=Math.random()*(maxX-minX)+minX;
+    const y=Math.random()*(maxY-minY)+minY;
+
+    btn.style.left=Math.max(10,Math.min(x,window.innerWidth-120))+"px";
+    btn.style.top=Math.max(10,Math.min(y,window.innerHeight-60))+"px";
 }
 </script>
 
